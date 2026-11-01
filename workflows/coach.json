@@ -1,0 +1,9 @@
+{
+  "name": "Sprachcoach",
+  "description": "Lädt den Lernverlauf und führt danach den Coach-Dialog aus.",
+  "start": "learner-memory",
+  "nodes": [
+    { "id": "learner-memory", "type": "memory", "next": "respond" },
+    { "id": "respond", "type": "llm", "use_memory": true, "next": null }
+  ]
+}

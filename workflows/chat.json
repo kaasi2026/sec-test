@@ -1,0 +1,8 @@
+{
+  "name": "Freier Chat",
+  "description": "Leitet eine Unterhaltung an den konfigurierten Chat-Provider weiter.",
+  "start": "respond",
+  "nodes": [
+    { "id": "respond", "type": "llm", "next": null }
+  ]
+}

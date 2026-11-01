@@ -1,0 +1,8 @@
+{
+  "name": "Übersetzen",
+  "description": "Übersetzt den ausgewählten Übungstext.",
+  "start": "translate",
+  "nodes": [
+    { "id": "translate", "type": "llm", "next": null }
+  ]
+}

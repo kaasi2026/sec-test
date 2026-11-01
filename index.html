@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f3ec">
+  <title>parlons — Sprachtraining</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="chat-app" id="chat-app">
+    <aside class="room-sidebar" id="room-sidebar">
+      <a class="sidebar-brand" href="/" aria-label="parlons Startseite"><span class="brand-mark">p.</span><span>parlons<small>SPRACHATELIER</small></span></a>
+      <button class="new-room-button" id="new-room"><span>＋</span> Neuer Chat</button>
+      <div class="sidebar-section-label">LERNSPRACHE</div>
+      <nav class="language-list" aria-label="Lernsprache">
+        <button class="language-tab active" data-language="fr" aria-pressed="true"><span class="language-code">FR</span><span>Französisch</span><span class="language-priority">Fokus</span></button>
+        <button class="language-tab" data-language="es" aria-pressed="false"><span class="language-code spanish">ES</span><span>Spanisch</span></button>
+        <button class="language-tab" data-language="it" aria-pressed="false"><span class="language-code italian">IT</span><span>Italienisch</span></button>
+      </nav>
+      <div class="room-list-heading"><span>CHAT-RÄUME</span><span id="room-count">1</span></div>
+      <nav class="room-list" id="room-list" aria-label="Deine Chaträume"></nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-progress"><div class="progress-heading"><span>DEIN LERNWEG</span><span id="progress-language">FR</span></div><div class="progress-stat"><strong id="word-count">0</strong><span>Wörter geübt</span></div><p class="progress-note" id="progress-note">Jede Wiederholung bringt dich näher ans Ziel.</p></div>
+        <div class="sidebar-user"><span class="user-avatar">L</span><span><strong>Lokales Profil</strong><small><span class="status-dot" id="ollama-dot"></span><span id="ollama-status">Prüfe Verbindung …</span></small></span><button class="sidebar-settings" id="settings-toggle" aria-label="Einstellungen öffnen" title="Einstellungen">⚙</button></div>
+      </div>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Menü schließen" hidden></button>
+
+    <main class="chat-main">
+      <header class="chat-header">
+        <div class="chat-title-wrap"><button class="menu-trigger" id="sidebar-toggle" aria-label="Chaträume öffnen">☰</button><div><h1 id="active-room-title">Französisch · Allgemein</h1><p><span class="header-live-dot"></span><span id="room-subtitle">Dein persönlicher Sprachcoach</span></p></div></div>
+        <div class="header-actions"><span class="local-indicator"><span class="status-dot" id="header-ollama-dot"></span><span id="header-ollama-status">LOKAL</span></span><button class="header-settings" id="header-settings" aria-label="Einstellungen" title="Einstellungen">⚙</button></div>
+      </header>
+
+      <section class="message-list" id="room-messages" role="log" aria-live="polite" aria-relevant="additions text"></section>
+
+      <footer class="chat-footer">
+        <div class="quick-actions" id="quick-actions">
+          <button class="quick-action" id="question-button"><span>✳</span> Stell mir eine Frage</button>
+          <button class="quick-action" id="mistakes-button"><span>↻</span> Fehler wiederholen <small id="mistake-summary"></small></button>
+          <button class="quick-action" id="translate-button"><span>⇄</span> Übersetzen</button>
+        </div>
+        <div class="recording-status" id="recording-status" hidden><span class="live-dot"></span><span>Aufnahme läuft</span><span class="record-timer" id="record-timer">00:00</span></div>
+        <form class="chat-composer" id="chat-form">
+          <label class="visually-hidden" for="source-text">Nachricht oder Übungstext</label>
+          <textarea id="source-text" maxlength="4000" rows="2" placeholder="Schreib eine Nachricht oder füge einen Satz zum Üben ein …"></textarea>
+          <div class="composer-bottom"><div class="composer-tools"><button type="button" class="composer-tool" id="speak-button" title="Text vorlesen">◖))) <span>Vorlesen</span></button><button type="button" class="composer-tool record-tool" id="record-button" title="Aufnahme starten"><span class="record-dot"></span><span>Aufnahme</span></button><button type="button" class="composer-tool stop-tool" id="stop-speech" title="Vorlesen stoppen" aria-label="Vorlesen stoppen" disabled>■</button><span class="voice-status" id="voice-label">&nbsp;</span></div><div class="composer-send"><span id="char-count">0 / 4.000</span><button type="submit" class="send-button" id="send-button" aria-label="Nachricht senden" title="Nachricht senden">↑</button></div></div>
+        </form>
+        <p class="composer-note" id="record-hint">Lokale Unterhaltung · Mit Kopfhörern sprechen für eine saubere Erkennung</p>
+      </footer>
+    </main>
+  </div>
+
+  <dialog id="settings-dialog" class="settings-dialog">
+    <form method="dialog" class="settings-top"><div><span class="eyebrow">VERBINDUNGEN</span><h2>Lokale Modelle</h2></div><button class="icon-button" aria-label="Schließen">×</button></form>
+    <p>Wähle ein installiertes Ollama-Modell für deine lokalen Chaträume.</p>
+    <label for="model-select">OLLAMA-MODELL</label>
+    <div class="model-row"><select id="model-select"><option value="">Modelle werden geladen …</option></select><button class="button button-secondary" id="refresh-models" type="button" title="Modelle neu laden">↻</button></div>
+    <div class="connection-row"><span class="status-dot" id="settings-ollama-dot"></span><span>Ollama</span><span id="settings-ollama-status">Wird geprüft</span></div>
+    <div class="connection-row"><span class="status-dot" id="whisper-dot"></span><span>Whisper lokal</span><span id="whisper-status">Wird geprüft</span></div>
+    <p class="settings-footnote">Für Transkription läuft whisper.cpp lokal unter <code>127.0.0.1:8080</code>. Lernverlauf und Chaträume bleiben auf diesem Gerät.</p>
+    <form method="dialog" class="settings-done"><button class="button button-ink">Fertig</button></form>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
